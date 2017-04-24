@@ -21,6 +21,7 @@ var AppComponent = (function () {
     function AppComponent(http) {
         this.http = http;
         this.usersUrl = 'http://localhost:3000/api/getAllUsers'; // URL to web API
+        this.users = [];
         this.name = 'Users List';
     }
     AppComponent.prototype.getAllUsers = function () {
@@ -48,14 +49,25 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.getAllUsers().subscribe(function (data) { return _this.users = data.users; }, function (error) { return _this.errorMessage = error; });
+        this.getAllUsers().subscribe(function (data) {
+            if (data.err) {
+                _this.errorMessage = data.errdesc;
+            }
+            else {
+                _this.users = data.users;
+            }
+            for (var _i = 0, _a = _this.users; _i < _a.length; _i++) {
+                var u = _a[_i];
+                console.log(u.email);
+            }
+        }, function (error) { return _this.errorMessage = error; });
     };
     return AppComponent;
 }());
 AppComponent = __decorate([
     core_1.Component({
         selector: 'my-app',
-        template: "<h1>{{name}}</h1>\n                <ul>\n                <li *ngFor=\"let user of users; let i = index\">{{user.email}}</li>\n                </ul>",
+        template: "<h1>{{name}}</h1>\n                <ul>\n                <li *ngFor=\"let user of users; let i = index\">{{user.email}}</li>\n                </ul>\n                <div *ngIf=\"errorMessage\">error: {{errorMessage}}</div>",
     }),
     __metadata("design:paramtypes", [http_1.Http])
 ], AppComponent);

@@ -41,7 +41,13 @@ gulp.task('inject', function () {
     // It's not necessary to read the files (will speed up things), we're only after their paths:
     //var sources = gulp.src(['./src/**/*.js', './src/**/*.css'], {read: false});
     //var sources = gulp.src([main_folder + jsDest + '/*.js', main_folder + cssDest + '/*.css'], {read: false});
-    var sources = gulp.src([__dirname + '/' + main_folder + jsDest + '/*.js', __dirname + '/' + main_folder + cssDest + '/*.css'], {read: false, cwd : __dirname + '/src/'});
+    var sources = gulp.src([
+        __dirname + '/bower_components/jquery/dist/jquery.min.js',
+        __dirname + '/bower_components/bootstrap/dist/js/bootstrap.min.js',
+        __dirname + '/bower_components/bootstrap/dist/css/bootstrap.min.css',
+        __dirname + '/' + main_folder + jsDest + '/*.js',
+        __dirname + '/' + main_folder + cssDest + '/*.css',
+    ], {read: false, cwd : __dirname + '/src/'});
 
     return target.pipe(inject(sources))
         .pipe(gulp.dest(main_folder));
@@ -149,7 +155,7 @@ gulp.task('nodemon',['style','inject','scripts', 'less', 'compile-typescript', '
         //     return tasks;
         // },
         // tasks : runSequence('reload-browser'),
-        watch: ['app.js']
+        watch: ['app.js', 'src/app/mysql/**/*.js']
     };
 
     var stream =  nodemon(options)

@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var router = express.Router();
-var routes = require('./src/routes/user.js');
+var routes = require('./src/app/routes/user.js');
 
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,6 +15,7 @@ var port = process.env.PORT || 8080;
 
 app.use('/public',express.static(__dirname + '/src/public'));
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
+app.use('/bower_components', express.static(__dirname + '/bower_components'));
 app.use('/app/conf', express.static(__dirname + '/src/app/conf'));
 // app.use('/systemjs-angular-loader.js', express.static(__dirname + '/systemjs-angular-loader.js'));
 app.get('/', function(req, res) {

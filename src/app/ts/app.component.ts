@@ -4,6 +4,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Http, Response }          from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { User } from './entities/user';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
@@ -12,15 +13,16 @@ import 'rxjs/add/operator/map';
     template: `<h1>{{name}}</h1>
                 <ul>
                 <li *ngFor="let user of users; let i = index">{{user.email}}</li>
-                </ul>`,
+                </ul>
+                <div *ngIf="errorMessage">error: {{errorMessage}}</div>`,
 })
 export class AppComponent implements OnInit {
-    private usersUrl = 'http://localhost:3000/api/getAllUsers';  // URL to web API
-    private users : any[];
+    private usersUrl:string = 'http://localhost:3000/api/getAllUsers';  // URL to web API
+    private users: Object = [];
     private errorMessage:string;
-    private name = 'Users List';
+    private name:string = 'Users List';
     constructor (private http: Http) {}
-    getAllUsers(): Observable<any[]> {
+    getAllUsers(): Observable<any> {
         return this.http.get(this.usersUrl)
             .map(this.extractData)
             .catch(this.handleError);
@@ -43,7 +45,19 @@ export class AppComponent implements OnInit {
         return Observable.throw(errMsg);
     }
 
-    ngOnInit() { this.getAllUsers().subscribe(
-        data => this.users = data.users,
-        error =>  this.errorMessage = <any>error); }
+    ngOnInit() {
+        this.getAllUsers().subscribe(
+            data => {
+                if(data.err) {
+                    this.errorMessage = data.errdesc;
+                } else {
+                    this.users = <User[]>data.users
+                }
+                for(let u of this.users) {
+                    console.log(u.email);
+                }
+            },
+            error =>  this.errorMessage = <any>error
+        );
+    }
 }
